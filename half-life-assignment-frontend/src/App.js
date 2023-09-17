@@ -8,15 +8,15 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-        <HashRouter>
-          <div className="App">
-            <Routes>
-                <Route exact path='/' element={< Dashboard />}></Route>
-                <Route exact path='/login' element={< Login />}></Route>
-                <Route exact path='/signup' element={< Signup />}></Route>
-            </Routes>
-          </div>
-        </HashRouter>
+        <div className="App">
+            <HashRouter>
+                <Routes>
+                    <Route exact path='/' element={< Dashboard />}></Route>
+                    <Route exact path='/login' element={< Login />}></Route>
+                    <Route exact path='/signup' element={< Signup />}></Route>
+                </Routes>
+            </HashRouter>
+        </div>
     );
   }
 }
