@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     MDBBadge,
     MDBBtn,
@@ -16,10 +16,64 @@ import {
     MDBTextArea,
 } from 'mdb-react-ui-kit';
 import Header from "../components/header";
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Typography from '@mui/material/Typography';
+
+
+const steps = [
+    {
+        label: 'Shipment Created',
+        description: `For each ad campaign that you create, you can control how much
+              you're willing to spend on clicks and conversions, which networks
+              and geographical locations you want your ads to show on, and more.`,
+    },
+    {
+        label: 'Shipment Picked Up',
+        description:
+            'An ad group contains one or more ads which target a shared set of keywords.',
+    },
+    {
+        label: 'In Transit',
+        description: `Try out different ad text to see what brings in the most customers,
+              and learn how to enhance your ads using features like ad extensions.
+              If you run into any problems with your ads, find out how to tell if
+              they're running and how to resolve approval issues.`,
+    },
+    {
+        label: 'Delivered',
+        description: `Try out different ad text to see what brings in the most customers,
+              and learn how to enhance your ads using features like ad extensions.
+              If you run into any problems with your ads, find out how to tell if
+              they're running and how to resolve approval issues.`,
+    }
+];
+
 
 function Dashboard (){
+
     const [createModal, setCreateModal] = useState(false);
-    const createBtnClick = () => setCreateModal(!createModal);
+    const [editModal, setEditModal] = useState(false);
+    const [trackModal, setTrackModal] = useState(false);
+    const [activeStep, setActiveStep] = React.useState(3);
+
+    // on page load
+    useEffect(() => {
+        console.log("loadDataOnlyOnce");
+    }, []);
+
+    // on create modal close
+    useEffect((val) => {
+        if (createModal === false) {
+            // code
+        }
+    }, [createModal]);
+
+    const toggleCreateShipmentModal = () => setCreateModal(!createModal);
+    const toggleTrackModal = () => setTrackModal(!trackModal);
+
     return (
         <>
             <Header/>
@@ -27,7 +81,7 @@ function Dashboard (){
                 display: "flex",
                 justifyContent: 'right',
             }}>
-                <MDBBtn style={{marginRight: '20px'}} type='button' onClick={createBtnClick}>
+                <MDBBtn style={{marginRight: '20px'}} type='button' onClick={toggleCreateShipmentModal}>
                     Create Shipment
                 </MDBBtn>
             </div>
@@ -76,7 +130,7 @@ function Dashboard (){
                                 <MDBBtn color='link' rounded size='sm'>
                                     Edit
                                 </MDBBtn>
-                                <MDBBtn color='link' rounded size='sm'>
+                                <MDBBtn color='link' rounded size='sm' onClick={toggleTrackModal}>
                                     Track Shipment
                                 </MDBBtn>
                             </td>
@@ -91,7 +145,7 @@ function Dashboard (){
                     <MDBModalContent>
                         <MDBModalHeader>
                             <MDBModalTitle>Create Shipment</MDBModalTitle>
-                            <MDBBtn className='btn-close' color='none' onClick={createBtnClick}></MDBBtn>
+                            <MDBBtn className='btn-close' color='none' onClick={toggleCreateShipmentModal}></MDBBtn>
                         </MDBModalHeader>
                         <MDBModalBody>
                             <form>
@@ -103,10 +157,39 @@ function Dashboard (){
                             </form>
                         </MDBModalBody>
                         <MDBModalFooter>
-                            <MDBBtn color='secondary' onClick={createBtnClick}>
+                            <MDBBtn color='secondary' onClick={toggleCreateShipmentModal}>
                                 Close
                             </MDBBtn>
                             <MDBBtn>Save changes</MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+
+            {/*Track Shipment Modal*/}
+            <MDBModal show={trackModal} setShow={setTrackModal} tabIndex='-1'>
+                <MDBModalDialog>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Track Shipment</MDBModalTitle>
+                            <MDBBtn className='btn-close' color='none' onClick={toggleTrackModal}></MDBBtn>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <Stepper activeStep={activeStep} orientation="vertical">
+                                {steps.map((step, index) => (
+                                    <Step key={step.label}>
+                                        <StepLabel>{step.label}</StepLabel>
+                                        <StepContent>
+                                            <Typography>{step.description}</Typography>
+                                        </StepContent>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn color='secondary' onClick={toggleTrackModal}>
+                                Close
+                            </MDBBtn>
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>
