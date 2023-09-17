@@ -2,8 +2,21 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import {MDBBtn, MDBCol, MDBInput, MDBRow, MDBTextArea} from 'mdb-react-ui-kit';
 import Header from "../components/header";
+import axiosInstance from "../interceptor/axios-instance";
 
 class Signup extends Component{
+
+    onRegister = () => {
+        axiosInstance.post('/api/v1/users',{
+            name: "uresha",
+            password: "12345"
+        }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        })
+    };
+
     render() {
         return (
             <>
@@ -24,8 +37,8 @@ class Signup extends Component{
                         <MDBInput className='mb-4 w-100' type='password' id='password' label='Password' />
                         <MDBInput className='mb-4 w-100' type='confirmPassword' id='confirmPassword' label='Confirm Password' />
 
-                        <MDBBtn type='submit' block>
-                            Sign in
+                        <MDBBtn type='button' block onClick={this.onRegister}>
+                            Register
                         </MDBBtn>
 
                         <MDBRow className='mt-4'>
