@@ -10,7 +10,7 @@ export const showErrorAlert = (msg) => {
 }
 
 export const showSuccessAlert = (msg) => {
-    Swal.fire({
+    return Swal.fire({
         title: 'Success!',
         text: msg,
         icon: 'success',

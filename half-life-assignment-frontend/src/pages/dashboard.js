@@ -126,6 +126,8 @@ function Dashboard (){
             userId: getLoggedUserId()
         }).then(res => {
             showSuccessAlert("Shipment created Successfully");
+            toggleCreateShipmentModal();
+            getAllShipments();
         }).catch(err => {
             showErrorAlert(err?.response?.data?.message);
         })
@@ -180,6 +182,7 @@ function Dashboard (){
                 <MDBTable align='middle'>
                     <MDBTableHead>
                         <tr>
+                            <th scope='col'>ID</th>
                             <th scope='col'>Sender</th>
                             <th scope='col'>Recipient</th>
                             <th scope='col'>Shipment Description</th>
@@ -192,6 +195,9 @@ function Dashboard (){
                             allShipments.map((value, index) => {
                                 return (
                                     <tr key={index}>
+                                        <td>
+                                            <p className='fw-normal mb-1'>#{value.id}</p>
+                                        </td>
                                         <td>
                                             <div className='d-flex align-items-center'>
                                                 <div>
@@ -274,7 +280,7 @@ function Dashboard (){
                 <MDBModalDialog>
                     <MDBModalContent>
                         <MDBModalHeader>
-                            <MDBModalTitle>Track Shipment</MDBModalTitle>
+                            <MDBModalTitle>Track Shipment - #{selectedShipmentId}</MDBModalTitle>
                             <MDBBtn className='btn-close' color='none' onClick={toggleTrackModal}></MDBBtn>
                         </MDBModalHeader>
                         <MDBModalBody>

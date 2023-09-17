@@ -20,7 +20,8 @@ router.get('/:userId', async (req, res, next) => {
   Shipment.findAll({
     where: {
       userId: req.params.userId
-    }
+    },
+    order: [['id', 'DESC']]
   }).then(value => {
     res.send(value);
   }).catch(err => {
