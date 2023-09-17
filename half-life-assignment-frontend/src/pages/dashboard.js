@@ -50,7 +50,7 @@ const steps = [
 function Dashboard (){
 
     const [shipmentModal, setShipmentModal] = useState(false);
-    const [shipmentModalMode, setShipmentModalMode] = useState(false);
+    const [shipmentModalMode, setShipmentModalMode] = useState(true); // true = create, false = update
     const [trackModal, setTrackModal] = useState(false);
     const [activeStep, setActiveStep] = React.useState(3);
     const [senderName, setSenderName] = useState('');
@@ -77,7 +77,7 @@ function Dashboard (){
         }
     }, [shipmentModal]);
 
-    const toggleCreateShipmentModal = () => setShipmentModal(!shipmentModal);
+    const toggleShipmentModal = () => setShipmentModal(!shipmentModal);
     const toggleTrackModal = () => setTrackModal(!trackModal);
 
     const handleInputChange = event => {
@@ -126,7 +126,26 @@ function Dashboard (){
             userId: getLoggedUserId()
         }).then(res => {
             showSuccessAlert("Shipment created Successfully");
-            toggleCreateShipmentModal();
+            toggleShipmentModal();
+            getAllShipments();
+        }).catch(err => {
+            showErrorAlert(err?.response?.data?.message);
+        })
+    };
+
+    const onEditShipment = () => {
+        if (!validateForm()) return;
+        axiosInstance.put('/api/v1/shipments',{
+            id: selectedShipmentId,
+            senderName: senderName,
+            senderAddress: senderAddress,
+            recipientName: recipientName,
+            recipientAddress: recipientAddress,
+            shipmentDescription: description,
+            userId: getLoggedUserId()
+        }).then(res => {
+            showSuccessAlert("Shipment updated Successfully");
+            toggleShipmentModal();
             getAllShipments();
         }).catch(err => {
             showErrorAlert(err?.response?.data?.message);
@@ -170,7 +189,10 @@ function Dashboard (){
                 display: "flex",
                 justifyContent: 'right',
             }}>
-                <MDBBtn style={{marginRight: '20px'}} type='button' onClick={toggleCreateShipmentModal}>
+                <MDBBtn style={{marginRight: '20px'}} type='button' onClick={() => {
+                    setShipmentModalMode(true);
+                    toggleShipmentModal();
+                }}>
                     Create Shipment
                 </MDBBtn>
             </div>
@@ -223,7 +245,20 @@ function Dashboard (){
                                             }
                                         </td>
                                         <td>
-                                            <MDBBtn color='link' rounded size='sm'>
+                                            <MDBBtn color='link' rounded size='sm' onClick={() => {
+                                                if (value.shipmentStatus !== 'SHIPMENT_CREATED') {
+                                                    showErrorAlert(`You cannot edit a shipment which is in ${value.shipmentStatus} status`);
+                                                    return;
+                                                }
+                                                setShipmentModalMode(false);
+                                                setSelectedShipmentId(value.id);
+                                                setSenderName(value.senderName);
+                                                setSenderAddress(value.senderAddress);
+                                                setRecipientName(value.recipientName);
+                                                setRecipientAddress(value.recipientAddress);
+                                                setDescription(value.shipmentDescription);
+                                                toggleShipmentModal();
+                                            }}>
                                                 Edit
                                             </MDBBtn>
                                             <MDBBtn color='link' rounded size='sm'
@@ -253,8 +288,12 @@ function Dashboard (){
                 <MDBModalDialog>
                     <MDBModalContent>
                         <MDBModalHeader>
-                            <MDBModalTitle>Create Shipment</MDBModalTitle>
-                            <MDBBtn className='btn-close' color='none' onClick={toggleCreateShipmentModal}></MDBBtn>
+                            {
+                                shipmentModalMode
+                                    ? <MDBModalTitle>Create Shipment</MDBModalTitle>
+                                    : <MDBModalTitle>Edit Shipment - #{selectedShipmentId}</MDBModalTitle>
+                            }
+                            <MDBBtn className='btn-close' color='none' onClick={toggleShipmentModal}></MDBBtn>
                         </MDBModalHeader>
                         <MDBModalBody>
                             <form>
@@ -266,10 +305,10 @@ function Dashboard (){
                             </form>
                         </MDBModalBody>
                         <MDBModalFooter>
-                            <MDBBtn color='secondary' onClick={toggleCreateShipmentModal}>
+                            <MDBBtn color='secondary' onClick={toggleShipmentModal}>
                                 Close
                             </MDBBtn>
-                            <MDBBtn onClick={onCreateShipment}>Save changes</MDBBtn>
+                            <MDBBtn onClick={() => {shipmentModalMode ? onCreateShipment() : onEditShipment()}}>Save changes</MDBBtn>
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>

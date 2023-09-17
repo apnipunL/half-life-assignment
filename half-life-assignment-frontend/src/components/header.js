@@ -11,7 +11,10 @@ export default function Header() {
                     <MDBNavbarBrand href='#'>Half Life Courier Service App</MDBNavbarBrand>
                     <MDBCollapse show={showNavColor} navbar>
                         <MDBNavbarNav right fullWidth={false} className='mb-2 mb-lg-0'>
-                            <MDBBtn type='button'>
+                            <MDBBtn type='button' onClick={() => {
+                                localStorage.clear();
+                                window.location.href = window.origin;
+                            }}>
                                 Logout
                             </MDBBtn>
                         </MDBNavbarNav>

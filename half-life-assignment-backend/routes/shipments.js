@@ -52,4 +52,33 @@ router.post('/', async (req, res, next) => {
   });
 });
 
+// update shipment
+router.put('/', async (req, res, next) => {
+  const user = await User.findOne({
+    where: {
+      id: req.body.userId || 0
+    }
+  });
+  if (!user) {
+    sendErrorResponse(res, 'User not found');
+    return;
+  }
+
+  // check if user same with token
+
+  Shipment.update({
+    senderName: req.body.senderName,
+    senderAddress: req.body.senderAddress,
+    recipientName: req.body.recipientName,
+    recipientAddress: req.body.recipientAddress,
+    shipmentDescription: req.body.shipmentDescription,
+  }, {where: {id: req.body.id}}).then(value => {
+    console.log(value);
+    const updatedData = value?.dataValues;
+    res.send(updatedData);
+  }).catch(err => {
+    sendErrorResponse(res, 'Failed to update shipment');
+  });
+});
+
 module.exports = router;
