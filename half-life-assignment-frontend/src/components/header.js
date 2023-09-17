@@ -6,7 +6,7 @@ export default function Header() {
 
     return (
         <>
-            <MDBNavbar style={{zIndex: '9999'}} expand='lg' dark bgColor='primary'>
+            <MDBNavbar style={{zIndex: '99'}} expand='lg' dark bgColor='primary'>
                 <MDBContainer fluid>
                     <MDBNavbarBrand href='#'>Half Life Courier Service App</MDBNavbarBrand>
                     <MDBCollapse show={showNavColor} navbar>
