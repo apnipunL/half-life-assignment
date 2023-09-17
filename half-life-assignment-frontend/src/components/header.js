@@ -1,19 +1,8 @@
 import React, {useState} from 'react';
-import {
-    MDBBtn,
-    MDBCollapse,
-    MDBContainer,
-    MDBIcon,
-    MDBNavbar,
-    MDBNavbarBrand,
-    MDBNavbarItem,
-    MDBNavbarLink,
-    MDBNavbarNav,
-    MDBNavbarToggler
-} from 'mdb-react-ui-kit';
+import {MDBBtn, MDBCollapse, MDBContainer, MDBNavbar, MDBNavbarBrand, MDBNavbarNav} from 'mdb-react-ui-kit';
 
 export default function Header() {
-    const [showNavColor, setShowNavColor] = useState(false);
+    const [showNavColor] = useState(false);
 
     return (
         <>
