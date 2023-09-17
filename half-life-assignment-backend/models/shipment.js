@@ -26,5 +26,8 @@ module.exports = sequelizeInstance.define('shipment', {
     },
     shipmentDescription: {
         type: DataTypes.STRING
+    },
+    shipmentStatus: {
+        type: DataTypes.STRING
     }
 });

@@ -42,6 +42,7 @@ router.post('/', async (req, res, next) => {
 
   // check if user same with token
 
+  req.body.shipmentStatus = 'SHIPMENT_CREATED';
   Shipment.create(req.body).then(value => {
     const createdData = value?.dataValues;
     res.send(createdData);

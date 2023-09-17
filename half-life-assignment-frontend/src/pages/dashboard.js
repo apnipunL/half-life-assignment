@@ -58,10 +58,12 @@ function Dashboard (){
     const [recipientName, setRecipientName] = useState('');
     const [recipientAddress, setRecipientAddress] = useState('');
     const [description, setDescription] = useState('');
+    const [allShipments, setAllShipments] = useState([]);
+    const [selectedShipmentId, setSelectedShipmentId] = useState(null);
 
     // on page load
     useEffect(() => {
-        console.log("loadDataOnlyOnce");
+        getAllShipments();
     }, []);
 
     // on create modal close
@@ -125,9 +127,38 @@ function Dashboard (){
         }).then(res => {
             showSuccessAlert("Shipment created Successfully");
         }).catch(err => {
-            console.log(err);
             showErrorAlert(err?.response?.data?.message);
         })
+    };
+
+    const getAllShipments = () => {
+        axiosInstance.get('/api/v1/shipments/' + getLoggedUserId()).then(res => {
+            setAllShipments(res.data);
+        }).catch(err => {
+            showErrorAlert(err?.response?.data?.message);
+        })
+    };
+
+    const renderShipmentStatus = (status) => {
+        switch (status) {
+            case 'SHIPMENT_CREATED': return (
+                <MDBBadge color='primary' pill>
+                    Shipment Created
+                </MDBBadge>);
+            case 'SHIPMENT_PICKED_UP': return (
+                <MDBBadge color='info' pill>
+                    Shipment Picked Up
+                </MDBBadge>);
+            case 'IN_TRANSIT': return (
+                <MDBBadge color='warning' pill>
+                    In Transit
+                </MDBBadge>);
+            case 'DELIVERD': return (
+                <MDBBadge color='success' pill>
+                    Deliverd
+                </MDBBadge>);
+
+        }
     };
 
     return (
@@ -157,40 +188,56 @@ function Dashboard (){
                         </tr>
                     </MDBTableHead>
                     <MDBTableBody>
-                        <tr>
-                            <td>
-                                <div className='d-flex align-items-center'>
-                                    <div>
-                                        <p className='fw-bold mb-1'>John Doe</p>
-                                        <p className='text-muted mb-0'>john.doe@gmail.com</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div className='d-flex align-items-center'>
-                                    <div>
-                                        <p className='fw-bold mb-1'>John Doe</p>
-                                        <p className='text-muted mb-0'>john.doe@gmail.com</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p className='fw-normal mb-1'>Software engineer</p>
-                            </td>
-                            <td>
-                                <MDBBadge color='success' pill>
-                                    Active
-                                </MDBBadge>
-                            </td>
-                            <td>
-                                <MDBBtn color='link' rounded size='sm'>
-                                    Edit
-                                </MDBBtn>
-                                <MDBBtn color='link' rounded size='sm' onClick={toggleTrackModal}>
-                                    Track Shipment
-                                </MDBBtn>
-                            </td>
-                        </tr>
+                        {
+                            allShipments.map((value, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>
+                                            <div className='d-flex align-items-center'>
+                                                <div>
+                                                    <p className='fw-bold mb-1'>{value.senderName}</p>
+                                                    <p className='text-muted mb-0'>{value.senderAddress}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className='d-flex align-items-center'>
+                                                <div>
+                                                    <p className='fw-bold mb-1'>{value.recipientName}</p>
+                                                    <p className='text-muted mb-0'>{value.recipientAddress}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p className='fw-normal mb-1'>{value.shipmentDescription}</p>
+                                        </td>
+                                        <td>
+                                            {
+                                                renderShipmentStatus(value.shipmentStatus)
+                                            }
+                                        </td>
+                                        <td>
+                                            <MDBBtn color='link' rounded size='sm'>
+                                                Edit
+                                            </MDBBtn>
+                                            <MDBBtn color='link' rounded size='sm'
+                                                    onClick={() => {
+                                                        setSelectedShipmentId(value.id);
+                                                        switch (value.shipmentStatus) {
+                                                            case 'SHIPMENT_CREATED': setActiveStep(0); break;
+                                                            case 'SHIPMENT_PICKED_UP': setActiveStep(1); break;
+                                                            case 'IN_TRANSIT': setActiveStep(2); break;
+                                                            case 'DELIVERD': setActiveStep(3); break;
+                                                        }
+                                                        toggleTrackModal()
+                                                    }}>
+                                                Track Shipment
+                                            </MDBBtn>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </MDBTableBody>
                 </MDBTable>
             </div>
