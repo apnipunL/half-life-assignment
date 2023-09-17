@@ -8,3 +8,12 @@ export const showErrorAlert = (msg) => {
         confirmButtonText: 'OK'
     })
 }
+
+export const showSuccessAlert = (msg) => {
+    Swal.fire({
+        title: 'Success!',
+        text: msg,
+        icon: 'success',
+        confirmButtonText: 'OK'
+    })
+}

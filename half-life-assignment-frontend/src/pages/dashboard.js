@@ -21,6 +21,8 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Typography from '@mui/material/Typography';
+import {showErrorAlert, showSuccessAlert} from "../util/alert-util";
+import axiosInstance from "../interceptor/axios-instance";
 
 
 const steps = [
@@ -54,10 +56,15 @@ const steps = [
 
 function Dashboard (){
 
-    const [createModal, setCreateModal] = useState(false);
-    const [editModal, setEditModal] = useState(false);
+    const [shipmentModal, setShipmentModal] = useState(false);
+    const [shipmentModalMode, setShipmentModalMode] = useState(false);
     const [trackModal, setTrackModal] = useState(false);
     const [activeStep, setActiveStep] = React.useState(3);
+    const [senderName, setSenderName] = useState('');
+    const [senderAddress, setSenderAddress] = useState('');
+    const [recipientName, setRecipientName] = useState('');
+    const [recipientAddress, setRecipientAddress] = useState('');
+    const [description, setDescription] = useState('');
 
     // on page load
     useEffect(() => {
@@ -66,13 +73,68 @@ function Dashboard (){
 
     // on create modal close
     useEffect((val) => {
-        if (createModal === false) {
-            // code
+        if (shipmentModal === false) {
+            setSenderName('');
+            setSenderAddress('');
+            setRecipientName('');
+            setRecipientAddress('');
+            setDescription('');
         }
-    }, [createModal]);
+    }, [shipmentModal]);
 
-    const toggleCreateShipmentModal = () => setCreateModal(!createModal);
+    const toggleCreateShipmentModal = () => setShipmentModal(!shipmentModal);
     const toggleTrackModal = () => setTrackModal(!trackModal);
+
+    const handleInputChange = event => {
+        event.preventDefault();
+        switch (event.target.id) {
+            case 'senderName': setSenderName(event.target.value); break;
+            case 'senderAddress': setSenderAddress(event.target.value); break;
+            case 'recipientName': setRecipientName(event.target.value); break;
+            case 'recipientAddress': setRecipientAddress(event.target.value); break;
+            case 'description': setDescription(event.target.value); break;
+        }
+    }
+
+    const validateForm = () => {
+        if(!senderName?.trim()) {
+            showErrorAlert('Please enter sender name');
+            return false;
+        }
+        if(!senderAddress?.trim()) {
+            showErrorAlert('Please enter sender address');
+            return false;
+        }
+        if(!recipientName?.trim()) {
+            showErrorAlert('Please enter recipient name');
+            return false;
+        }
+        if(!recipientAddress?.trim()) {
+            showErrorAlert('Please enter recipient address');
+            return false;
+        }
+        if(!description?.trim()) {
+            showErrorAlert('Please enter shipment description');
+            return false;
+        }
+        return true;
+    }
+
+    const onCreateShipment = () => {
+        if (!validateForm()) return;
+        axiosInstance.post('/api/v1/shipments',{
+            senderName: senderName,
+            senderAddress: senderAddress,
+            recipientName: recipientName,
+            recipientAddress: recipientAddress,
+            description: description
+        }).then(res => {
+            showSuccessAlert("Shipment created Successfully");
+        }).catch(err => {
+            console.log(err);
+            showErrorAlert(err);
+        })
+    };
 
     return (
         <>
@@ -139,8 +201,8 @@ function Dashboard (){
                 </MDBTable>
             </div>
 
-            {/*Create Shipment Modal*/}
-            <MDBModal show={createModal} setShow={setCreateModal} tabIndex='-1'>
+            {/*Shipment Modal*/}
+            <MDBModal show={shipmentModal} setShow={setShipmentModal} tabIndex='-1'>
                 <MDBModalDialog>
                     <MDBModalContent>
                         <MDBModalHeader>
@@ -149,18 +211,18 @@ function Dashboard (){
                         </MDBModalHeader>
                         <MDBModalBody>
                             <form>
-                                <MDBInput className='mb-4 w-100' type='sName' id='sName' label='Sender Name' />
-                                <MDBTextArea className='mb-4 w-100' type='sAddress' id='sAddress' label='Sender Address' />
-                                <MDBInput className='mb-4 w-100' type='rName' id='rName' label='Recipient Name' />
-                                <MDBTextArea className='mb-4 w-100' type='rAddress' id='rAddress' label='Recipient Address' />
-                                <MDBTextArea className='mb-4 w-100' type='description' id='description' label='Shipment Description' />
+                                <MDBInput className='mb-4 w-100' type='text' id='senderName' label='Sender Name' onChange={handleInputChange} value={senderName}/>
+                                <MDBTextArea className='mb-4 w-100' id='senderAddress' label='Sender Address' onChange={handleInputChange} value={senderAddress}/>
+                                <MDBInput className='mb-4 w-100' type='text' id='recipientName' label='Recipient Name' onChange={handleInputChange} value={recipientName}/>
+                                <MDBTextArea className='mb-4 w-100' id='recipientAddress' label='Recipient Address' onChange={handleInputChange} value={recipientAddress}/>
+                                <MDBTextArea className='mb-4 w-100' id='description' label='Shipment Description' onChange={handleInputChange} value={description}/>
                             </form>
                         </MDBModalBody>
                         <MDBModalFooter>
                             <MDBBtn color='secondary' onClick={toggleCreateShipmentModal}>
                                 Close
                             </MDBBtn>
-                            <MDBBtn>Save changes</MDBBtn>
+                            <MDBBtn onClick={onCreateShipment}>Save changes</MDBBtn>
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>

@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {MDBBtn, MDBCol, MDBInput, MDBRow, MDBTextArea} from 'mdb-react-ui-kit';
 import Header from "../components/header";
 import axiosInstance from "../interceptor/axios-instance";
-import {showErrorAlert} from "../util/alert-util";
+import {showErrorAlert, showSuccessAlert} from "../util/alert-util";
 import {isValidEmail, isValidPassword} from "../util/validator-util";
 
 class Signup extends Component{
@@ -64,9 +64,10 @@ class Signup extends Component{
             password: this.state.password,
             confirmPassword: this.state.confirmPassword
         }).then(res => {
-            console.log(res);
+            showSuccessAlert("User created Successfully");
         }).catch(err => {
             console.log(err);
+            showErrorAlert(err);
         })
     };
 
