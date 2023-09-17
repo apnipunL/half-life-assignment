@@ -1,15 +1,20 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors')
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors')
+const sequelizeInstance = require('./database/sequelise-instance')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var shipmentsRouter = require('./routes/shipments');
+// import models for automatic table creation
+const User = require('./models/user');
 
-var app = express();
+// import routes
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const shipmentsRouter = require('./routes/shipments');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +48,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(8000)
+(async () => {
+  await sequelizeInstance.sync({ force: false });
+  app.listen(8000, () => console.log('Started backend application'));
+})();
 
 module.exports = app;
