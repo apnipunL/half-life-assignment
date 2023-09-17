@@ -23,33 +23,26 @@ import StepContent from '@mui/material/StepContent';
 import Typography from '@mui/material/Typography';
 import {showErrorAlert, showSuccessAlert} from "../util/alert-util";
 import axiosInstance from "../interceptor/axios-instance";
+import {getLoggedUserId} from "../util/local-storage-util";
 
 
 const steps = [
     {
         label: 'Shipment Created',
-        description: `For each ad campaign that you create, you can control how much
-              you're willing to spend on clicks and conversions, which networks
-              and geographical locations you want your ads to show on, and more.`,
+        description: `You just create the shipment.`,
     },
     {
         label: 'Shipment Picked Up',
         description:
-            'An ad group contains one or more ads which target a shared set of keywords.',
+            'Shipment collected from the sender.',
     },
     {
         label: 'In Transit',
-        description: `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`,
+        description: `Your Shipment is on the way.`,
     },
     {
         label: 'Delivered',
-        description: `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`,
+        description: `Shipment has been dropped off at the final destination`,
     }
 ];
 
@@ -127,12 +120,13 @@ function Dashboard (){
             senderAddress: senderAddress,
             recipientName: recipientName,
             recipientAddress: recipientAddress,
-            description: description
+            shipmentDescription: description,
+            userId: getLoggedUserId()
         }).then(res => {
             showSuccessAlert("Shipment created Successfully");
         }).catch(err => {
             console.log(err);
-            showErrorAlert(err);
+            showErrorAlert(err?.response?.data?.message);
         })
     };
 

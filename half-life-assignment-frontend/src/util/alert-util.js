@@ -3,7 +3,7 @@ const Swal = require('sweetalert2');
 export const showErrorAlert = (msg) => {
     Swal.fire({
         title: 'Error!',
-        text: msg,
+        text: msg || 'Something went wrong. Please try again in a while.',
         icon: 'error',
         confirmButtonText: 'OK'
     })

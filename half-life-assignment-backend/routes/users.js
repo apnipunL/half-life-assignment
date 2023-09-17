@@ -5,7 +5,17 @@ const sendErrorResponse = require("../util/sendErrorResponse");
 const router = express.Router();
 
 // user registration
-router.post('/', function(req, res, next) {
+router.post('/', async (req, res, next) => {
+  const user = await User.findOne({
+    where: {
+      email: req.email
+    }
+  });
+  if (user) {
+    sendErrorResponse(res, 'User already exist with email');
+    return;
+  }
+
   User.create(req.body).then(value => {
     const createdData = value?.dataValues;
     createdData.password = '****';

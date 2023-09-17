@@ -8,6 +8,7 @@ const sequelizeInstance = require('./database/sequelise-instance')
 
 // import models for automatic table creation
 const User = require('./models/user');
+const Shipment = require('./models/shipment');
 
 // import routes
 const indexRouter = require('./routes/index');
@@ -49,6 +50,9 @@ app.use(function(err, req, res, next) {
 });
 
 (async () => {
+  // define relationships
+  User.hasMany(Shipment);
+
   await sequelizeInstance.sync({ force: false });
   app.listen(8000, () => console.log('Started backend application'));
 })();
