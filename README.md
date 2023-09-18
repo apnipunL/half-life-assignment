@@ -29,6 +29,6 @@ Availabe statuses are:- SHIPMENT_CREATED, SHIPMENT_PICKED_UP, IN_TRANSIT, DELIVE
 
 CURL
 ```
-code here
+curl --location --request PATCH 'http://localhost:8000/api/v1/shipments/1/status/DELIVERD'
 ```
 
