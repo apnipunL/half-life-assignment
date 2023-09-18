@@ -19,3 +19,12 @@ React | v18.2.0
   2. Run **npm install** command in terminal
   3. Run node **npm start** command in terminal
   4. Open **http://localhost:3000** and check the preview
+
+# Special note
+According to the requiremnt document provided, an **ADMIN ROLE** related developments are not concidered. But the status of the **shipment** has to be updated by an Admin user. Therefore **for the testing purpose only** I have created an open API to update the status of the shipment.
+
+PATCH: http://localhost:8000/api/v1/shipment/:shipmentId/status/:status
+
+Availabe statuses are:- SHIPMENT_CREATED, SHIPMENT_PICKED_UP, IN_TRANSIT, DELIVERED
+
+
