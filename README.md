@@ -27,4 +27,8 @@ PATCH: http://localhost:8000/api/v1/shipment/:shipmentId/status/:status
 
 Availabe statuses are:- SHIPMENT_CREATED, SHIPMENT_PICKED_UP, IN_TRANSIT, DELIVERED
 
+CURL
+```
+code here
+```
 
