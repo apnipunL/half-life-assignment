@@ -12,8 +12,9 @@ React | v18.2.0
 - Backend
   1. Clone the project, open **half-life-assignment-backend** folder
   2. Run **npm install** command in terminal
-  3. Change the **POSTGRES_CONNECTION_STRING** value in ./const/constants.js according to your local setup.
-  4. Run node **./app.js** command in terminal
+  3. Create an empty database (preferably named as: **half-life-assignment**, pgAdmin tool can be used to create the database)
+  4. Change the **POSTGRES_CONNECTION_STRING** value in ./const/constants.js according to your local setup.
+  5. Run node **./app.js** command in terminal
 - Frontend
   1. Clone the project, open **half-life-assignment-frontend** folder
   2. Run **npm install** command in terminal
@@ -27,4 +28,7 @@ PATCH: http://localhost:8000/api/v1/shipment/:shipmentId/status/:status
 
 Availabe statuses are:- SHIPMENT_CREATED, SHIPMENT_PICKED_UP, IN_TRANSIT, DELIVERED
 
+```
+curl --location --request PATCH 'http://localhost:8000/api/v1/shipments/1/status/DELIVERD'
+```
 
