@@ -2,11 +2,10 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require('./../models/user');
-const sendErrorResponse = require("../util/sendErrorResponse");
+const sendErrorResponse = require("../util/send-error-response");
+const constants = require("../const/constants");
 
 const router = express.Router();
-
-const JWT_SECRET = 'hello@half-life@nipun';
 
 // user registration
 router.post('/', async (req, res, next) => {
@@ -55,7 +54,7 @@ router.post('/login', async (req, res, next) => {
 
   //signing token
   user.password = '****'
-  const token = jwt.sign({...user}, JWT_SECRET, {
+  const token = jwt.sign({...user?.dataValues}, constants.JWT_SECRET, {
     expiresIn: 86400 // 24 hours
   });
 
@@ -65,6 +64,5 @@ router.post('/login', async (req, res, next) => {
     user: user
   });
 });
-
 
 module.exports = router;

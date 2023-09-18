@@ -1,12 +1,13 @@
 const express = require('express');
 const Shipment = require('./../models/shipment');
 const User = require('./../models/user');
-const sendErrorResponse = require("../util/sendErrorResponse");
+const sendErrorResponse = require("../util/send-error-response");
+const verifyToken = require("../util/verify-token");
 
 const router = express.Router();
 
 // list shipments by user
-router.get('/:userId', async (req, res, next) => {
+router.get('/:userId', verifyToken, async (req, res, next) => {
   const user = await User.findOne({
     where: {
       id: req.params.userId
@@ -15,6 +16,13 @@ router.get('/:userId', async (req, res, next) => {
   if (!user) {
     sendErrorResponse(res, 'User not found');
     return
+  }
+
+  // check if user same with token
+  console.log(req.params.userId, req.tokenUser?.id)
+  if (req.params.userId != req.tokenUser?.id) {
+    sendErrorResponse(res, 'Not permitted');
+    return;
   }
 
   Shipment.findAll({
@@ -30,7 +38,7 @@ router.get('/:userId', async (req, res, next) => {
 });
 
 // create shipment
-router.post('/', async (req, res, next) => {
+router.post('/', verifyToken, async (req, res, next) => {
   const user = await User.findOne({
     where: {
       id: req.body.userId || 0
@@ -42,6 +50,10 @@ router.post('/', async (req, res, next) => {
   }
 
   // check if user same with token
+  if (req.body.userId != req.tokenUser?.id) {
+    sendErrorResponse(res, 'Not permitted');
+    return;
+  }
 
   req.body.shipmentStatus = 'SHIPMENT_CREATED';
   Shipment.create(req.body).then(value => {
@@ -53,7 +65,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // update shipment
-router.put('/', async (req, res, next) => {
+router.put('/', verifyToken, async (req, res, next) => {
   const user = await User.findOne({
     where: {
       id: req.body.userId || 0
@@ -65,6 +77,10 @@ router.put('/', async (req, res, next) => {
   }
 
   // check if user same with token
+  if (req.body.userId != req.tokenUser?.id) {
+    sendErrorResponse(res, 'Not permitted');
+    return;
+  }
 
   Shipment.update({
     senderName: req.body.senderName,
