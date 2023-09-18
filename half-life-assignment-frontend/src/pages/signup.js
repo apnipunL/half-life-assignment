@@ -66,8 +66,7 @@ class Signup extends Component{
         }).then(res => {
             showSuccessAlert("User created Successfully");
         }).catch(err => {
-            console.log(err);
-            showErrorAlert(err);
+            showErrorAlert((err?.response?.data?.message));
         })
     };
 
@@ -85,11 +84,46 @@ class Signup extends Component{
                     bottom: 0
                 }}>
                     <form style={{minWidth: '50vw'}}>
-                        <MDBInput className='mb-4 w-100' type='name' id='name' label='Full Name' onChange={this.handleInputChange} />
-                        <MDBInput className='mb-4 w-100' type='email' id='email' label='Email Address' onChange={this.handleInputChange}/>
-                        <MDBTextArea className='mb-4 w-100' type='address' id='address' label='Address' onChange={this.handleInputChange}/>
-                        <MDBInput className='mb-4 w-100' type='password' id='password' label='Password' onChange={this.handleInputChange}/>
-                        <MDBInput className='mb-4 w-100' type='password' id='confirmPassword' label='Confirm Password' onChange={this.handleInputChange}/>
+                        <MDBInput
+                            className='mb-4 w-100'
+                            type='name'
+                            id='name'
+                            label='Full Name'
+                            onChange={this.handleInputChange}
+                            value={this.state.name}
+                        />
+                        <MDBInput
+                            className='mb-4 w-100'
+                            type='email'
+                            id='email'
+                            label='Email Address'
+                            onChange={this.handleInputChange}
+                            value={this.state.email}
+                        />
+                        <MDBTextArea
+                            className='mb-4 w-100'
+                            type='address'
+                            id='address'
+                            label='Address'
+                            onChange={this.handleInputChange}
+                            value={this.state.address}
+                        />
+                        <MDBInput
+                            className='mb-4 w-100'
+                            type='password'
+                            id='password'
+                            label='Password'
+                            onChange={this.handleInputChange}
+                            value={this.state.password}
+                        />
+                        <MDBInput
+                            className='mb-4 w-100'
+                            type='password'
+                            id='confirmPassword'
+                            label='Confirm Password'
+                            onChange={this.handleInputChange}
+                            value={this.state.confirmPassword}
+                        />
 
                         <MDBBtn type='button' block onClick={this.onRegister}>
                             Register

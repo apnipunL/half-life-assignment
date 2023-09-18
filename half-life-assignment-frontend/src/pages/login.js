@@ -2,8 +2,48 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import {MDBBtn, MDBCol, MDBInput, MDBRow} from 'mdb-react-ui-kit';
 import Header from "../components/header";
+import {isValidEmail} from "../util/validator-util";
+import {showErrorAlert, showSuccessAlert} from "../util/alert-util";
+import axiosInstance from "../interceptor/axios-instance";
 
 class Login extends Component{
+
+    state = {
+        email: '',
+        password: ''
+    }
+
+    handleInputChange = event => {
+        event.preventDefault();
+        this.setState({
+            [event.target.id]: event.target.value,
+        });
+    }
+
+    validateForm = () => {
+        if(!this.state.email?.trim() || !isValidEmail(this.state.email)) {
+            showErrorAlert('Please enter a valid email');
+            return false;
+        }
+        if(!this.state.password) {
+            showErrorAlert('Please enter your password');
+            return false;
+        }
+        return true;
+    }
+
+    onLogin = () => {
+        if (!this.validateForm()) return;
+        axiosInstance.post('/api/v1/users/login',{
+            email: this.state.email,
+            password: this.state.password
+        }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            showErrorAlert((err?.response?.data?.message));
+        });
+    }
+
     render() {
         return (
             <>
@@ -18,10 +58,10 @@ class Login extends Component{
                     bottom: 0
                 }}>
                     <form style={{minWidth: '50vw'}}>
-                        <MDBInput className='mb-4 w-100' type='email' id='form1Example1' label='Email address' />
-                        <MDBInput className='mb-4 w-100' type='password' id='form1Example2' label='Password' />
+                        <MDBInput className='mb-4 w-100' type='email' id='email' label='Email address' onChange={this.handleInputChange} value={this.state.email}/>
+                        <MDBInput className='mb-4 w-100' type='password' id='password' label='Password' onChange={this.handleInputChange} value={this.state.password}/>
 
-                        <MDBBtn type='submit' block>
+                        <MDBBtn type='button' block onClick={this.onLogin}>
                             Sign in
                         </MDBBtn>
 
