@@ -89,11 +89,37 @@ router.put('/', verifyToken, async (req, res, next) => {
     recipientAddress: req.body.recipientAddress,
     shipmentDescription: req.body.shipmentDescription,
   }, {where: {id: req.body.id}}).then(value => {
-    console.log(value);
     const updatedData = value?.dataValues;
     res.send(updatedData);
   }).catch(err => {
     sendErrorResponse(res, 'Failed to update shipment');
+  });
+});
+
+//change shipment status:- FOR TESTING PURPOSE ONLY
+router.patch('/:shipmentId/status/:status', async (req, res, next) => {
+  const availableShipments = ['SHIPMENT_CREATED', 'SHIPMENT_PICKED_UP', 'IN_TRANSIT', 'DELIVERD'];
+  if(!availableShipments.includes(req.params.status)) {
+    sendErrorResponse(res, 'Invalid shipment status. Please refer the README.md for available statuses.');
+    return;
+  }
+
+  const shipment = await Shipment.findOne({
+    where: {
+      id: req.params.shipmentId || 0
+    }
+  });
+  if (!shipment) {
+    sendErrorResponse(res, 'Shipment not found');
+    return;
+  }
+
+  Shipment.update({
+    shipmentStatus: req.params.status
+  }, {where: {id: req.params.shipmentId}}).then(value => {
+    res.send({code: 200, message: 'Status updated sucessfully'});
+  }).catch(err => {
+    sendErrorResponse(res, 'Failed to update shipment status');
   });
 });
 
