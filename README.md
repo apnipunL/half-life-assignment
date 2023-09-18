@@ -4,6 +4,6 @@ Both Backend and Frontend projects are in this repository. Please read the instr
 # Prerequisites to run the project
 Tool | Version
 --- | ---
-Postgresql | x.x.x
-Node.js | xxx
-React | xxx
+Postgresql | v16.0
+Node.js | v18.17.1
+React | v18.2.0
