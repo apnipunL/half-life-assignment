@@ -63,8 +63,9 @@ class Signup extends Component{
             address: this.state.address,
             password: this.state.password,
             confirmPassword: this.state.confirmPassword
-        }).then(res => {
-            showSuccessAlert("User created Successfully");
+        }).then(async res => {
+            await showSuccessAlert("User created Successfully. You can login now");
+            window.location.href = window.origin + '/#/login';
         }).catch(err => {
             showErrorAlert((err?.response?.data?.message));
         })

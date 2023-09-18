@@ -3,8 +3,9 @@ import {Link} from "react-router-dom";
 import {MDBBtn, MDBCol, MDBInput, MDBRow} from 'mdb-react-ui-kit';
 import Header from "../components/header";
 import {isValidEmail} from "../util/validator-util";
-import {showErrorAlert, showSuccessAlert} from "../util/alert-util";
+import {showErrorAlert} from "../util/alert-util";
 import axiosInstance from "../interceptor/axios-instance";
+import {setLoggedUserAccessToken, setLoggedUserId} from "../util/local-storage-util";
 
 class Login extends Component{
 
@@ -38,7 +39,9 @@ class Login extends Component{
             email: this.state.email,
             password: this.state.password
         }).then(res => {
-            console.log(res);
+            setLoggedUserAccessToken(res.data?.accessToken);
+            setLoggedUserId(res.data?.user?.id);
+            window.location.href = window.origin + '/#/'
         }).catch(err => {
             showErrorAlert((err?.response?.data?.message));
         });

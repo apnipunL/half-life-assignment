@@ -3,8 +3,7 @@ const ACCESS_TOKEN_KEY = 'access_token';
 const USER_ID_KEY = 'user_id';
 
 export const getLoggedUserId = () => {
-    // return localStorage.getItem(USER_ID_KEY);
-    return '1';
+    return localStorage.getItem(USER_ID_KEY);
 }
 
 export const getLoggedUserAccessToken = () => {
